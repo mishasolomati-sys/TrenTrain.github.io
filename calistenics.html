@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRENTRAIN</title>
+    <style>
+        :root {
+            --bg: #121212;
+            --card: #1e1e1e;
+            --text: #e0e0e0;
+            --accent: #9370DB;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        nav {
+            width: 100%;
+            background: var(--card);
+            padding: 15px 0;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+        nav a {
+            color: var(--text);
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        nav a:hover { color: var(--accent); }
+        
+        .container {
+            max-width: 600px;
+            width: 90%;
+            margin-top: 20px;
+            display: none; /* Переключение страниц через JS */
+        }
+        .active { display: block; }
+
+        /* Стили компонентов */
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        button {
+            background: var(--accent);
+            border: none;
+            padding: 10px 20px;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: #333;
+            border: 1px solid #444;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        /* Чат */
+        #chat-box {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .msg { margin-bottom: 10px; padding: 5px 10px; border-radius: 4px; background: #2c2c2c; }
+        .msg b { color: var(--accent); }
+
+        
+        #workout-display {
+            margin-top: 20px;
+            padding: 15px;
+            border-left: 4px solid var(--accent);
+            background: #252525;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+        <a onclick="showPage('chat')">Чат</a>
+    <a onclick="showPage('workouts')">Тренировки</a>
+    <a onclick="showPage('dating')">Знакомства</a>
+    <a onclick="showPage('login')">Вход</a>
+</nav>
+
+<div id="chat" class="container active">
+    <h2>Чат атлетов</h2>
+    <div class="card">
+        <input type="text" id="chat-input" placeholder="Введите сообщение...">
+        <button onclick="sendMessage()">Отправить</button>
+        <div style="margin-top: 20px; text-align: center; color: #888;">
+        <p>Функция "Чат атлетов" находится в разработке...</p>
+            </div>
+    </div>
+</div>
+
+<div id="workouts" class="container">
+    <h2>Генератор тренировок</h2>
+    <div class="card">
+        <label>Выберите ваш уровень:</label>
+        <select id="level-select">
+            <option value="0">Уровень 1: База</option>
+            <option value="1">Уровень 2: Прогрессии</option>
+            <option value="2">Уровень 3: Элементы</option>
+        </select>
+        <button onclick="generateWorkout()">Получить тренировку</button>
+        <div id="workout-display" style="display:none;">
+            <h3 id="w-title"></h3>
+            <p id="w-desc"></p>
+        </div>
+    </div>
+</div>
+
+<div id="dating" class="container">
+    <h2>Поиск напарника</h2>
+    <div class="card">
+        <p>Выберите район для поиска тренировочного партнера:</p>
+        <select>
+            <option>фили</option>
+            <option>кунцево</option>
+            <option>дорогомилово</option>
+            <option>арбат</option>
+        </select>
+        <button onclick="alert('Поиск запущен...')">Найти атлетов</button>
+        <div style="margin-top: 20px; text-align: center; color: #888;">
+            <p>Функция "Знакомства" находится в разработке...</p>
+
+        </div>
+    </div>
+</div>
+
+<div id="login" class="container">
+    <h2>Регистрация / Вход</h2>
+    <div class="card">
+        <input type="text" placeholder="Почта">
+        <input type="password" placeholder="Пароль">
+        <button onclick="alert('Успешный вход (имитация)')">Войти</button>
+        
+    </div>
+</div>
+
+<script>
+    // Навигация
+    function showPage(pageId) {
+        document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+    }
+
+
+
+
+    const workoutDb = [
+        [
+            { title: "Базовая", desc: "10х4 подтягиваний, 30х1 отжиманий, 20х2-3 брусьев" },
+            { title: "Взрывная сила", desc: "5х5 взрывных подтягиваний, 10х3 отжиманий на брусьях, 3 попытки выхода" }
+        ],
+        [
+            { title: "Подготовка к выходу", desc: "3х5 высоких подтягиваний, 12х5 отжиманий от перкладины," },
+            { title: "Подготовка к элементам", desc: "10х3 подтягивания в закр/полузакр переднем висе, 5х3 отжиманий в закрытом горизонте, 10х3 подъемов закрытого переднего виса." }
+        ],
+        [
+            { title: "Передний вис", desc: "Попытки удержания виса 5 сек, 8х2 полузакрытых подтягиваний в висе, ОТКАЗх2 подьемов фулл/открытого виса" },
+            { title: "Горизонт", desc: "4 попытки самой сложной прогрессии горизонта (стараться брать новый угол), 2RIRх3 отжимания в стойке на руках, отжимания домиком" }
+        ]
+    ];
+
+    function generateWorkout() {
+        const lvl = document.getElementById('level-select').value;
+        const randomIdx = Math.floor(Math.random() * 2);
+        const workout = workoutDb[lvl][randomIdx];
+        
+        const display = document.getElementById('workout-display');
+        document.getElementById('w-title').innerText = workout.title;
+        document.getElementById('w-desc').innerText = workout.desc;
+        display.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
